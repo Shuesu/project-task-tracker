@@ -1,26 +1,28 @@
-import { useState } from "react"
+// src/features/tasks/ui/TaskInput
+import {useState} from "react";
 
 type Props = {
     onAdd: (title: string) => void
 }
 
-export function TaskInput({ onAdd }: Props) {
+export function TaskInput({onAdd}: Props) {
     const [value, setValue] = useState("")
 
     function handleAdd() {
-        if (!value.trim()) return
+        if(!value.trim()) return
 
         onAdd(value)
-        setValue("")
+        setValue('')
     }
 
     return (
         <div>
             <input
-                value={value}
+                value= {value}
                 onChange={e => setValue(e.target.value)}
-                placeholder="Новая задача"
+                placeholder='Новая задача'
             />
+
             <button onClick={handleAdd}>Добавить</button>
         </div>
     )
