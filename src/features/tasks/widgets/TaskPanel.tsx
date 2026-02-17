@@ -1,9 +1,12 @@
 // src/features/tasks/widgets/TaskPanel.tsx
 import { useTasks } from "../model/useTasks"
-import { TaskInput } from "../ui/TaskInput"
-import { TaskSearch } from "../ui/TaskSearch"
-import { TaskFilter } from "../ui/TaskFilter"
 import { TaskList } from "../ui/TaskList"
+import { TaskInput } from "../ui/TaskInput"
+import { TaskFilter } from "../ui/TaskFilter"
+import {TaskCounters} from "../ui/TaskCounters.tsx";
+import { TaskSearch } from "../ui/TaskSearch"
+import { TaskSort } from "../ui/TaskSort"
+
 
 export function TaskPanel() {
     const {
@@ -19,6 +22,8 @@ export function TaskPanel() {
         completedCount,
         query,
         setQuery,
+        sort,
+        setSort,
     } = useTasks()
 
     return (
@@ -27,11 +32,14 @@ export function TaskPanel() {
 
             <TaskInput onAdd={addTask} />
             <TaskSearch value={query} onChange={setQuery} />
+            <TaskSort value={sort} onChange={setSort} />
             <TaskFilter value={filter} onChange={setFilter} />
 
-            <div style={{ marginBottom: 12 }}>
-                Total: {totalCount} | Active: {activeCount} | Completed: {completedCount}
-            </div>
+            <TaskCounters
+                total={totalCount}
+                active={activeCount}
+                completed={completedCount}
+            />
 
             <TaskList
                 tasks={tasks}

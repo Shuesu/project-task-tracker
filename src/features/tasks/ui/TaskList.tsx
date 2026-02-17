@@ -1,4 +1,4 @@
-// src/features/tasks/components/TaskList.tsx
+// src/features/tasks/ui/TaskList.tsx
 import type { Task } from "../model/types.ts"
 import { TaskItem } from "../components/TaskItem.tsx"
 
