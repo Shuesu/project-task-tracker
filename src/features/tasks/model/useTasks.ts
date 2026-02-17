@@ -24,6 +24,7 @@ export function useTasks() {
     // ========== hook state =========
     const [tasks, setTasks] = useState<Task[]>(() => loadTasks())
     const [filter, setFilter] = useState<Filter>("all")
+    const [query, setQuery] = useState("")
 
     // ========== actions =========
     function addTask(title: string) {
@@ -54,11 +55,17 @@ export function useTasks() {
     }
 
     // ========== derived =========
-    const filteredTasks = tasks.filter(task => {
+
+    const searchedTasks = tasks.filter(task =>
+        task.title.toLowerCase().includes(query.toLowerCase())
+    )
+
+    const filteredTasks = searchedTasks.filter(task => {
         if (filter === "active") return !task.completed
         if (filter === "completed") return task.completed
         return true
     })
+
 
     const totalCount = tasks.length
     const completedCount = tasks.filter(t => t.completed).length
@@ -81,5 +88,7 @@ export function useTasks() {
         toggleTask,
         removeTask,
         updateTaskTitle,
+        query,
+        setQuery,
     }
 }
