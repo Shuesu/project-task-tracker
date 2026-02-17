@@ -1,5 +1,5 @@
 // src/features/tasks/ui/TaskInput
-import {useState} from "react";
+import { useEffect, useRef, useState } from "react"; // validation
 
 type Props = {
     onAdd: (title: string) => void
@@ -8,6 +8,11 @@ type Props = {
 export function TaskInput({onAdd}: Props) {
     const [value, setValue] = useState("")
 
+    const inputRef = useRef<HTMLInputElement>(null)
+    useEffect(() => {
+        inputRef.current?.focus()
+    }, []) // validation
+
     function handleAdd() {
         if(!value.trim()) return
 
@@ -15,13 +20,20 @@ export function TaskInput({onAdd}: Props) {
         setValue('')
     }
 
+    function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+        if (e.key === "Enter") handleAdd()
+    }
+
     return (
         <div>
             <input
-                value= {value}
+                ref={inputRef}
+                value={value}
                 onChange={e => setValue(e.target.value)}
                 placeholder='Новая задача'
+                onKeyDown={handleKeyDown}
             />
+
 
             <button onClick={handleAdd}>Добавить</button>
         </div>

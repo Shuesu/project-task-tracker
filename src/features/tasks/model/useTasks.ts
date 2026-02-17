@@ -4,6 +4,7 @@ import type { Task, Filter, Sort } from "./types"
 
 // ========== const =========
 const STORAGE_KEY = "tasks_v1"
+const MAX_TITLE_LEN = 60
 
 // ========== helpers (storage, utils) =========
 
@@ -27,7 +28,7 @@ function normalizeTasks(raw: unknown): Task[] {
     }
 
     return result
-} // ✅ добавили
+}
 
 
 function loadTasks(): Task[] {
@@ -36,7 +37,7 @@ function loadTasks(): Task[] {
 
     try {
         const parsed = JSON.parse(raw)
-        return normalizeTasks(parsed) // тут изменили только try блок
+        return normalizeTasks(parsed)
     } catch {
         localStorage.removeItem(STORAGE_KEY)
         return []
@@ -48,18 +49,24 @@ export function useTasks() {
     const [tasks, setTasks] = useState<Task[]>(() => loadTasks())
     const [filter, setFilter] = useState<Filter>("all")
     const [query, setQuery] = useState("")
-    const [sort, setSort] = useState<Sort>("newest") // ✅ добавили
+    const [sort, setSort] = useState<Sort>("newest")
 
     // ========== actions =========
     function addTask(title: string) {
+        const trimmed = title.trim()
+        if (!trimmed) return
+        const clean = trimmed.slice(0, MAX_TITLE_LEN)
+
         const newTask: Task = {
             id: crypto.randomUUID(),
-            title,
+            title: clean,
             completed: false,
             createdAt: Date.now(),
         }
+
         setTasks((prev) => [...prev, newTask])
     }
+
 
     function toggleTask(id: string) {
         setTasks((prev) =>
@@ -74,10 +81,19 @@ export function useTasks() {
     }
 
     function updateTaskTitle(id: string, title: string) {
+        const trimmed = title.trim()
+        if (!trimmed) return
+        const clean = trimmed.slice(0, MAX_TITLE_LEN)
+
         setTasks((prev) =>
-            prev.map((task) => (task.id === id ? { ...task, title } : task))
+            prev.map((task) => (task.id === id ? { ...task, title: clean } : task))
         )
     }
+
+    function clearCompleted() {
+        setTasks(prev => prev.filter(task => !task.completed))
+    } // validation
+
 
     // ========== derived =========
     const searchedTasks = tasks.filter((task) =>
@@ -90,7 +106,7 @@ export function useTasks() {
         return true
     })
 
-    // ✅ сортировка ПОСЛЕ поиска+фильтра
+    //  сортировка ПОСЛЕ поиска+фильтра
     const sortedTasks = [...filteredTasks].sort((a, b) => {
         if (sort === "newest") return b.createdAt - a.createdAt
         return a.createdAt - b.createdAt
@@ -107,24 +123,20 @@ export function useTasks() {
 
     // ========== return =========
     return {
-        tasks: sortedTasks, // ✅ было filteredTasks
-
+        tasks: sortedTasks,
         filter,
         setFilter,
-
-        sort,       // ✅ добавили
-        setSort,    // ✅ добавили
-
+        sort,
+        setSort,
         totalCount,
         activeCount,
         completedCount,
-
         addTask,
         toggleTask,
         removeTask,
         updateTaskTitle,
-
         query,
         setQuery,
+        clearCompleted, // validation
     }
 }

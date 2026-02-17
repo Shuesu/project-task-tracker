@@ -6,6 +6,7 @@ import { TaskFilter } from "../ui/TaskFilter"
 import {TaskCounters} from "../ui/TaskCounters.tsx";
 import { TaskSearch } from "../ui/TaskSearch"
 import { TaskSort } from "../ui/TaskSort"
+import { TaskActions } from "../ui/TaskActions"
 
 
 export function TaskPanel() {
@@ -20,6 +21,7 @@ export function TaskPanel() {
         totalCount,
         activeCount,
         completedCount,
+        clearCompleted,
         query,
         setQuery,
         sort,
@@ -39,6 +41,10 @@ export function TaskPanel() {
                 total={totalCount}
                 active={activeCount}
                 completed={completedCount}
+            />
+            <TaskActions
+                completedCount={completedCount}
+                onClearCompleted={clearCompleted}
             />
 
             <TaskList

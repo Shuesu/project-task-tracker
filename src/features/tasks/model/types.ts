@@ -7,4 +7,4 @@ export type Task = {
 
 export type Filter = "all" | "active" | "completed"
 
-export type Sort = "newest" | "oldest" // +
+export type Sort = "newest" | "oldest"
